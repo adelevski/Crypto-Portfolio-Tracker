@@ -1,0 +1,8 @@
+# VS Code
+.vscode
+
+# Python
+venv
+
+# Keys
+config.py
