@@ -13,6 +13,16 @@ def coinbase_fetch(balance):
             holding.update({currency: amount})
     return holding
 
+# Coinbase Pro
+def coinbasepro_fetch(balance):
+    holding = {}
+    for asset in balance['info']:
+        currency = asset['currency']
+        amount = asset['balance']
+        if float(amount) > 0:
+            holding.update({currency: amount})
+    return holding
+
 
 coinbase = ccxt.coinbase({
     'apiKey': config.COINBASE_KEY,
@@ -40,11 +50,10 @@ balance_binanceus = binanceus.fetch_balance()
 balance_kucoin = kucoin.fetch_balance()
 
 holding_coinbase = coinbase_fetch(balance_coinbase)
-holding_coinbasepro = {}
+holding_coinbasepro = coinbasepro_fetch(balance_coinbasepro)
 holding_binanceus = {}
 holding_kucoin = {}
 
-print(holding_coinbase)
 
 
 
