@@ -25,25 +25,17 @@ kucoin = ccxt.kucoin({
 #######################################
 
 
-# ######## Balance Fetching ##############
+######### Balance Fetching ##############
 holding_coinbase = coinbase_fetch(coinbase.fetch_balance())
 holding_coinbasepro = coinbasepro_fetch(coinbasepro.fetch_balance())
 holding_binanceus = binanceus_fetch(binanceus.fetch_balance())
 holding_kucoin = kucoin_fetch(kucoin.fetch_balance())
-# ########################################
 
 all_holdings = [holding_coinbase, holding_coinbasepro, holding_binanceus, holding_kucoin]
+totals = total_fetch(all_holdings)
+#########################################
 
-totals = {}
 
-for holding in all_holdings:
-    for key in holding.keys():
-        if key not in totals:
-            totals.update({key: holding[key]})
-        elif key in totals:
-            temp_og = float(totals[key])
-            temp_new = float(holding[key])
-            totals[key] = str(temp_og + temp_new)
 
 # print(holding_coinbase)
 # print(holding_coinbasepro)

@@ -39,3 +39,16 @@ def kucoin_fetch(balance):
         if float(amount) > 0:
             holding.update({currency: amount})
     return holding
+
+# Total
+def total_fetch(holdings):
+    totals = {}
+    for holding in holdings:
+        for key in holding.keys():
+            if key not in totals:
+                totals.update({key: holding[key]})
+            elif key in totals:
+                temp_og = float(totals[key])
+                temp_new = float(holding[key])
+                totals[key] = str(temp_og + temp_new)
+    return totals
