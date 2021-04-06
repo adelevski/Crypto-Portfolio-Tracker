@@ -1,29 +1,7 @@
-import ccxt
-import config
-import json
+import ccxt, config, json, fetch_funcs
 
 
-# Coinbase
-def coinbase_fetch(balance):
-    holding = {}
-    for data in balance['info']['data']:
-        amount = data['balance']['amount']
-        currency = data['balance']['currency']
-        if float(amount) > 0:
-            holding.update({currency: amount})
-    return holding
-
-# Coinbase Pro
-def coinbasepro_fetch(balance):
-    holding = {}
-    for asset in balance['info']:
-        currency = asset['currency']
-        amount = asset['balance']
-        if float(amount) > 0:
-            holding.update({currency: amount})
-    return holding
-
-
+########### Authorization ############
 coinbase = ccxt.coinbase({
     'apiKey': config.COINBASE_KEY,
     'secret': config.COINBASE_SECRET
@@ -43,19 +21,24 @@ kucoin = ccxt.kucoin({
     'secret': config.KUCOIN_SECRET,
     'password': config.KUCOIN_PASSWORD
 })
+#######################################
 
-balance_coinbase = coinbase.fetch_balance()
-balance_coinbasepro = coinbasepro.fetch_balance()
+
+
+
+
+# balance_coinbase = coinbase.fetch_balance()
+# balance_coinbasepro = coinbasepro.fetch_balance()
 balance_binanceus = binanceus.fetch_balance()
-balance_kucoin = kucoin.fetch_balance()
+# balance_kucoin = kucoin.fetch_balance()
 
-holding_coinbase = coinbase_fetch(balance_coinbase)
-holding_coinbasepro = coinbasepro_fetch(balance_coinbasepro)
-holding_binanceus = {}
-holding_kucoin = {}
-
-
+# holding_coinbase = coinbase_fetch(balance_coinbase)
+# holding_coinbasepro = coinbasepro_fetch(balance_coinbasepro)
+holding_binanceus = binanceus_fetch(balance_binanceus)
+# holding_kucoin = {}
 
 
+
+print(holding_binanceus)
 
 
