@@ -1,4 +1,5 @@
-import ccxt, config, json, fetch_funcs
+import ccxt, config, json
+from fetch_funcs import *
 
 
 ########### Authorization ############
@@ -24,21 +25,29 @@ kucoin = ccxt.kucoin({
 #######################################
 
 
+# ######## Balance Fetching ##############
+holding_coinbase = coinbase_fetch(coinbase.fetch_balance())
+holding_coinbasepro = coinbasepro_fetch(coinbasepro.fetch_balance())
+holding_binanceus = binanceus_fetch(binanceus.fetch_balance())
+holding_kucoin = kucoin_fetch(kucoin.fetch_balance())
+# ########################################
 
+all_holdings = [holding_coinbase, holding_coinbasepro, holding_binanceus, holding_kucoin]
 
+totals = {}
 
-# balance_coinbase = coinbase.fetch_balance()
-# balance_coinbasepro = coinbasepro.fetch_balance()
-balance_binanceus = binanceus.fetch_balance()
-# balance_kucoin = kucoin.fetch_balance()
+for holding in all_holdings:
+    for key in holding.keys():
+        if key not in totals:
+            totals.update({key: holding[key]})
+        elif key in totals:
+            temp_og = float(totals[key])
+            temp_new = float(holding[key])
+            totals[key] = str(temp_og + temp_new)
 
-# holding_coinbase = coinbase_fetch(balance_coinbase)
-# holding_coinbasepro = coinbasepro_fetch(balance_coinbasepro)
-holding_binanceus = binanceus_fetch(balance_binanceus)
-# holding_kucoin = {}
+# print(holding_coinbase)
+# print(holding_coinbasepro)
+# print(holding_binanceus)
+# print(holding_kucoin)
 
-
-
-print(holding_binanceus)
-
-
+print(totals)

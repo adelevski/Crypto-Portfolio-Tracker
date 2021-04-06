@@ -29,3 +29,13 @@ def binanceus_fetch(balance):
         if float(amount) > 0:
             holding.update({currency: amount})
     return holding
+
+# KuCoin
+def kucoin_fetch(balance):
+    holding = {}
+    for asset in balance['info']['data']:
+        amount = asset['balance']
+        currency = asset['currency']
+        if float(amount) > 0:
+            holding.update({currency: amount})
+    return holding
