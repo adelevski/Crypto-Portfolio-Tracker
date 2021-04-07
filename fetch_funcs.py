@@ -52,3 +52,10 @@ def total_fetch(holdings):
                 temp_new = float(holding[key])
                 totals[key] = str(temp_og + temp_new)
     return totals
+
+# String Constructor function for CMC API price fetching
+def cmc_string_maker(totals):
+    symbol_string = ''
+    for key in totals:
+        symbol_string += key + ','
+    return symbol_string[:-1]

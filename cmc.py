@@ -1,9 +1,10 @@
-from requests import Request, Session
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
-import json, alts
-from pprint import pprint
+from coinmarketcapapi import CoinMarketCapAPI
+import alts
 from fetch_funcs import *
 from auth import *
+
+
+cmc = CoinMarketCapAPI('4d28581b-33ae-428c-85a4-a2797ba109b4')
 
 
 ######### Balance Fetching ##############
@@ -19,26 +20,10 @@ totals = total_fetch(all_holdings)
 #########################################
 
 
-url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
-parameters = {
-  'start':'1',
-  'limit':'3',
-  'convert':'USD'
-}
-headers = {
-  'Accepts': 'application/json',
-  'X-CMC_PRO_API_KEY': '4d28581b-33ae-428c-85a4-a2797ba109b4',
-}
+######## Price Fetching ################
+symbol_string = cmc_string_maker(totals)
+########################################
 
-session = Session()
-session.headers.update(headers)
 
-try:
-  response = session.get(url, params=parameters)
-  data = json.loads(response.text)
-  for i in range(3):
-    print(data.get('data')[i]['name'])
-    print(data.get('data')[i]['quote']['USD']['price'])
-
-except (ConnectionError, Timeout, TooManyRedirects) as e:
-  print(e)
+# data = cmc.cryptocurrency_quotes_latest(symbol='BTC,ETH')
+# print(data)
