@@ -1,4 +1,6 @@
 # Simple functions for fetching balances from certain exchanges
+import alts
+from auth import *
 
 # Coinbase
 def coinbase_fetch(balance):
@@ -53,9 +55,30 @@ def total_fetch(holdings):
                 totals[key] = str(temp_og + temp_new)
     return totals
 
+# Get totals
+def get_totals():
+    holding_coinbase = coinbase_fetch(coinbase.fetch_balance())
+    holding_coinbasepro = coinbasepro_fetch(coinbasepro.fetch_balance())
+    holding_binanceus = binanceus_fetch(binanceus.fetch_balance())
+    holding_kucoin = kucoin_fetch(kucoin.fetch_balance())
+    holding_voyager = alts.holding_voyager
+    holding_metamask = alts.holding_metamask
+
+    all_holdings = [holding_coinbase, holding_coinbasepro, holding_binanceus, holding_kucoin, holding_voyager, holding_metamask]
+    totals = total_fetch(all_holdings)
+
+    totals['CELO'] = totals['CGLD']
+    totals['LYXe'] = totals['LYXE']
+    del totals['CGLD']
+    del totals['USD']
+    del totals['LYXE']
+    return totals
+#########################################
+
 # String Constructor function for CMC API price fetching
 def cmc_string_maker(totals):
     symbol_string = ''
     for key in totals:
         symbol_string += key + ','
     return symbol_string[:-1]
+
