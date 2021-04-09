@@ -17,6 +17,6 @@ data = cmc.cryptocurrency_quotes_latest(symbol=symbol_string)
 for key in data.data:
     symbol = data.data[key]['symbol'] 
     price = data.data[key]['quote']['USD']['price']
-    print(f"The price of {symbol} is {price} and you currently hold {totals[key]}")
+    print(f"{symbol}: {float(totals[key]):.3f} at ${price:.3f} worth ${float(price)*float(totals[key]):.2f}")
     total_holdings += float(price) * float(totals[key])
-print(f"For a total of ${total_holdings}")
+print(f"Total: ${total_holdings:.2f}")
