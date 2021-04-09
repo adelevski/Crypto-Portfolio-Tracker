@@ -15,8 +15,10 @@ symbol_string = cmc_string_maker(totals)
 total_holdings = 0.0
 data = cmc.cryptocurrency_quotes_latest(symbol=symbol_string)
 for key in data.data:
-    symbol = data.data[key]['symbol'] 
-    price = data.data[key]['quote']['USD']['price']
-    print(f"{symbol}: {float(totals[key]):.3f} at ${price:.3f} worth ${float(price)*float(totals[key]):.2f}")
-    total_holdings += float(price) * float(totals[key])
+    symbol = data.data[key]['symbol']
+    amount = float(totals[key]) 
+    quote = float(data.data[key]['quote']['USD']['price'])
+    worth = amount*quote
+    print(f"{symbol}: {amount:.2f} at ${quote:.2f} worth ${worth:.2f}")
+    total_holdings += worth
 print(f"Total: ${total_holdings:.2f}")
