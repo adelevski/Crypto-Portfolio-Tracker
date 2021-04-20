@@ -1,6 +1,6 @@
 from coinmarketcapapi import CoinMarketCapAPI
 import alts, json
-from fetch_funcs import get_totals, cmc_string_maker
+from funcs import get_totals, cmc_string_maker, printData
 from auth import *
 import config
 
@@ -19,6 +19,6 @@ for key in data.data:
     amount = float(totals[key]) 
     quote = float(data.data[key]['quote']['USD']['price'])
     worth = amount*quote
-    print(f"{symbol}: {amount:.2f} at ${quote:.2f} worth ${worth:.2f}")
+    printData(symbol, amount, quote, worth)
     total_holdings += worth
 print(f"Total: ${total_holdings:.2f}")

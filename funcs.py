@@ -81,4 +81,16 @@ def cmc_string_maker(totals):
     for key in totals:
         symbol_string += key + ','
     return symbol_string[:-1]
+#########################################
 
+######## Printing Function ############
+def printData(symbol, amount, quote, worth):
+    if len(symbol) == 2:
+        print(f"{symbol}:    {amount:.2f} at ${quote:.2f} worth ${worth:.2f}")
+    elif len(symbol) == 3:
+        print(f"{symbol}:   {amount:.2f} at ${quote:.2f} worth ${worth:.2f}")
+    elif len(symbol) == 4:
+        print(f"{symbol}:  {amount:.2f} at ${quote:.2f} worth ${worth:.2f}")
+    else:
+        print(f"{symbol}: {amount:.2f} at ${quote:.2f} worth ${worth:.2f}")
+########################################
