@@ -1,11 +1,11 @@
 import numpy as np
 from scipy.stats import norm
 
-r = 0.01
-S = 30
-K = 40
-T = 240/365
-sigma = 0.30
+r = 0.05
+S = 100
+K = 110
+T = 1
+sigma = 0.20
 
 def blackSholes(r, S, K, T, sigma, type="C"):
     # Calculate the BS option price for a call or put
@@ -20,5 +20,5 @@ def blackSholes(r, S, K, T, sigma, type="C"):
     except:
         print("Please confirm all option parameters above!!!")
     
-print("Option Price is: ", round(blackSholes(r, S, K, T, sigma, type="P"), 2))
+print("Option Price is: ", round(blackSholes(r, S, K, T, sigma, type="C"), 2))
 
