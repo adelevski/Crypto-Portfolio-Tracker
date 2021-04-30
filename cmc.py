@@ -15,6 +15,7 @@ symbol_string = cmc_string_maker(totals)
 
 data = cmc.cryptocurrency_quotes_latest(symbol=symbol_string)
 
+
 symbols, amounts, quotes, worths = [], [], [], []
 
 for key in data.data:
