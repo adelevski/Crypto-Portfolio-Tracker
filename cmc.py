@@ -13,7 +13,6 @@ totals = get_totals()
 symbol_string = cmc_string_maker(totals)
 ########################################
 
-total_holdings = 0.0
 data = cmc.cryptocurrency_quotes_latest(symbol=symbol_string)
 
 symbols, amounts, quotes, worths = [], [], [], []
@@ -28,12 +27,12 @@ df = pd.DataFrame(index=symbols)
 df['Amount'] = amounts
 df['Quote'] = quotes
 df['Worth'] = worths
-totals = df['Worth'].sum()
-total_holdings = 'Total: $' + f'{totals:,.2f}'
+net = df['Worth'].sum()
+netWorth = 'Net: $' + f'{net:,.2f}'
 df['Amount'] = df['Amount'].map('{:,.4f}'.format)
 df['Quote'] = df['Quote'].map('${:,.2f}'.format)
 df['Worth'] = df['Worth'].map('${:,.2f}'.format)
 
 print(df)
-print(total_holdings)
+print(netWorth)
 
