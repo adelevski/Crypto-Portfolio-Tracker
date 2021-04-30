@@ -3,6 +3,7 @@ import alts, json
 from funcs import get_totals, cmc_string_maker, printData
 from auth import *
 import config
+import pandas as pd
 
 
 cmc = CoinMarketCapAPI(config.CMC_API)
@@ -14,11 +15,25 @@ symbol_string = cmc_string_maker(totals)
 
 total_holdings = 0.0
 data = cmc.cryptocurrency_quotes_latest(symbol=symbol_string)
+
+symbols, amounts, quotes, worths = [], [], [], []
+
 for key in data.data:
-    symbol = data.data[key]['symbol']
-    amount = float(totals[key]) 
-    quote = float(data.data[key]['quote']['USD']['price'])
-    worth = amount*quote
-    printData(symbol, amount, quote, worth)
-    total_holdings += worth
-print(f"Total: ${total_holdings:.2f}")
+    symbols.append(data.data[key]['symbol'])
+    amounts.append(float(totals[key]))
+    quotes.append(float(data.data[key]['quote']['USD']['price']))
+    worths.append(float(totals[key])*float(data.data[key]['quote']['USD']['price']))
+
+df = pd.DataFrame(index=symbols)
+df['Amount'] = amounts
+df['Quote'] = quotes
+df['Worth'] = worths
+totals = df['Worth'].sum()
+total_holdings = 'Total: $' + f'{totals:,.2f}'
+df['Amount'] = df['Amount'].map('{:,.4f}'.format)
+df['Quote'] = df['Quote'].map('${:,.2f}'.format)
+df['Worth'] = df['Worth'].map('${:,.2f}'.format)
+
+print(df)
+print(total_holdings)
+
