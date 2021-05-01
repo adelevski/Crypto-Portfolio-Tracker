@@ -1,6 +1,6 @@
 from coinmarketcapapi import CoinMarketCapAPI
 import alts, json
-from funcs import get_totals, cmc_string_maker, printData
+from funcs import get_totals, cmc_string_maker
 from auth import *
 import config
 import pandas as pd
