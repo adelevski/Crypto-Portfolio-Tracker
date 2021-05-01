@@ -7,3 +7,7 @@ __pycache__
 
 # Keys
 config.py
+
+# Holdings on non-ccxt exchanges/wallets
+alts.py
+
