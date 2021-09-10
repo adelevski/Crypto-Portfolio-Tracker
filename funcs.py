@@ -1,5 +1,6 @@
 import alts
 from auth import exchanges
+from auth import cmc
 import pandas as pd
 from collections import defaultdict
 
@@ -18,7 +19,7 @@ def dsum(dicts):
     return dict(ret)
 
 
-# Get total
+# Get total balance 
 def get_total():
     all_holdings = [parse(exchange.fetch_balance()) for exchange in exchanges]
     all_holdings.append(alts.voyager_balance)
@@ -26,6 +27,7 @@ def get_total():
     total_balance = dsum(all_holdings)
     total_balance['LYXe'] = total_balance.pop('LYXE')
     return dict(sorted(total_balance.items()))
+
 
 # String Constructor function for CMC API price fetching
 def string_maker(balance):
@@ -36,4 +38,10 @@ def string_maker(balance):
     return symbol_string[:-1]
 
 
-print(get_total())
+def get_prices(total_balance):
+    symbol_string = string_maker(total_balance)
+    data = cmc.cryptocurrency_quotes_latest(symbol=symbol_string)
+    prices = {}
+    for key in data.data:
+        prices[data.data[key]['symbol']] = data.data[key]['quote']['USD']['price']
+    return prices
