@@ -1,7 +1,7 @@
 from coinmarketcapapi import CoinMarketCapAPI
-import alts, json
-from funcs import get_totals, cmc_string_maker
-from auth import *
+import alts
+import json
+from funcs import get_total, string_maker
 import config
 import pandas as pd
 
@@ -9,8 +9,8 @@ import pandas as pd
 cmc = CoinMarketCapAPI(config.CMC_API)
 
 ######## Price Fetching ################
-totals = get_totals()
-symbol_string = cmc_string_maker(totals)
+total = get_total()
+symbol_string = string_maker(totals)
 ########################################
 
 data = cmc.cryptocurrency_quotes_latest(symbol=symbol_string)
