@@ -1,7 +1,8 @@
-import ccxt, config
+import ccxt
+import config
+from coinmarketcapapi import CoinMarketCapAPI
 
 
-########### Exchange Authorization ############
 coinbase = ccxt.coinbase({
     'apiKey': config.COINBASE_KEY,
     'secret': config.COINBASE_SECRET
@@ -21,4 +22,7 @@ kucoin = ccxt.kucoin({
     'secret': config.KUCOIN_SECRET,
     'password': config.KUCOIN_PASSWORD
 })
-############################################
+
+exchanges = [coinbase, coinbasepro, binanceus, kucoin]
+
+cmc = CoinMarketCapAPI(config.CMC_API)

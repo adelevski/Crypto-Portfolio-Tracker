@@ -1,4 +1,4 @@
-from coinmarketcapapi import CoinMarketCapAPI
+
 import alts
 import json
 from funcs import get_total, string_maker
@@ -6,7 +6,7 @@ import config
 import pandas as pd
 
 
-cmc = CoinMarketCapAPI(config.CMC_API)
+
 
 ######## Price Fetching ################
 total = get_total()
