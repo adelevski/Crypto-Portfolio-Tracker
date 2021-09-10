@@ -1,8 +1,6 @@
 from funcs import get_total
 from funcs import get_prices
-
 import pandas as pd
-
 
 
 # data fetching
