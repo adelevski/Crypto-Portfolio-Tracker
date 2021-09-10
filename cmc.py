@@ -5,25 +5,27 @@ import pandas as pd
 
 
 
-######## Data Fetching ################
+# data fetching
 total_balance = get_total()
 prices = get_prices(total_balance)
-########################################
 
 
+# dataframe creation and processing
+df = pd.DataFrame.from_dict(total_balance, columns=['amount'], orient='index')
+df['price'] = df.index.map(prices)
+df.fillna(1.0, inplace=True)
+df['value'] = df['price'] * df['amount']
+total_value = df['value'].sum()
+df['weight'] = (df['value'] / total_value) * 100
 
 
+# dataframe formatting for presentation
+df['amount'] = df['amount'].map('{:,.4f}'.format)
+df['price'] = df['price'].map('${:,.2f}'.format)
+df['value'] = df['value'].map('${:,.2f}'.format)
+df['weight'] = df['weight'].map('{:,.2f}%'.format)
 
-df = pd.DataFrame(index=symbols)
-df['Amount'] = amounts
-df['Quote'] = quotes
-df['Worth'] = worths
-net = df['Worth'].sum()
-netWorth = 'Net: $' + f'{net:,.2f}'
-df['Amount'] = df['Amount'].map('{:,.4f}'.format)
-df['Quote'] = df['Quote'].map('${:,.2f}'.format)
-df['Worth'] = df['Worth'].map('${:,.2f}'.format)
 
 print(df)
-print(netWorth)
+print(f"Total value: ${total_value:.2f}")
 
