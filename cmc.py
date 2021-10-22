@@ -26,4 +26,3 @@ df['weight'] = df['weight'].map('{:,.2f}%'.format)
 
 print(df)
 print(f"Total value: ${total_value:.2f}")
-
