@@ -11,3 +11,5 @@ config.py
 # Holdings on non-ccxt exchanges/wallets
 alts.py
 
+# Testing
+testing.ipynb
