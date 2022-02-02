@@ -40,6 +40,7 @@ def string_maker(balance):
     return symbol_string[:-1]
 
 
+# Getting prices from Coin Market Cap
 def get_prices(balance):
     symbol_string = string_maker(balance)
     data = cmc.cryptocurrency_quotes_latest(symbol=symbol_string)
@@ -48,6 +49,8 @@ def get_prices(balance):
         prices[data.data[key]['symbol']] = data.data[key]['quote']['USD']['price']
     return prices
 
+
+# Formatting data in to dataframes, cleaning it, and displaying it
 def df_work(balance, prices):
     if 'LYXE' in balance.keys():
         balance['LYXe'] = balance.pop('LYXE')
