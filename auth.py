@@ -23,6 +23,11 @@ kucoin = ccxt.kucoin({
     'password': config.KUCOIN_PASSWORD
 })
 
-exchanges = [coinbase, coinbasepro, binanceus, kucoin]
+exchanges = {
+    'coinbase': coinbase, 
+    'coinbasepro': coinbasepro, 
+    'binanceus': binanceus, 
+    'kucoin': kucoin
+}
 
 cmc = CoinMarketCapAPI(config.CMC_API)

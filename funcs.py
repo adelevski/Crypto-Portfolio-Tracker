@@ -21,12 +21,15 @@ def dsum(dicts):
 
 # Get total balance 
 def get_total():
-    all_holdings = [parse(exchange.fetch_balance()) for exchange in exchanges]
-    all_holdings.append(alts.voyager_balance)
-    all_holdings.append(alts.metamask_balance)
-    total_balance = dsum(all_holdings)
+    all_holdings = {}
+    for name, exchange in exchanges.items():
+        print(name)
+        all_holdings[name] = parse(exchange.fetch_balance())
+    all_holdings['voyager'] = alts.voyager_balance
+    all_holdings['metamask'] = alts.metamask_balance
+    total_balance = dsum(list(all_holdings.values()))
     total_balance['LYXe'] = total_balance.pop('LYXE')
-    return dict(sorted(total_balance.items()))
+    return dict(sorted(total_balance.items())), all_holdings
 
 
 # String Constructor function for CMC API price fetching
@@ -45,3 +48,18 @@ def get_prices(total_balance):
     for key in data.data:
         prices[data.data[key]['symbol']] = data.data[key]['quote']['USD']['price']
     return prices
+
+def df_work(balance, prices):
+    df = pd.DataFrame.from_dict(balance, columns=['amount'], orient='index')
+    df['price'] = df.index.map(prices)
+    df.fillna(1.0, inplace=True)
+    df['value'] = df['price'] * df['amount']
+    total_value = df['value'].sum()
+    df['weight'] = (df['value'] / total_value) * 100
+    # dataframe formatting for presentation
+    df['amount'] = df['amount'].map('{:,.4f}'.format)
+    df['price'] = df['price'].map('${:,.2f}'.format)
+    df['value'] = df['value'].map('${:,.2f}'.format)
+    df['weight'] = df['weight'].map('{:,.2f}%'.format)
+    print(df)
+    print(f"Total value: ${total_value:.2f}")
