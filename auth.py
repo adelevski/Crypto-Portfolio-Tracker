@@ -24,9 +24,9 @@ kucoin = ccxt.kucoin({
 })
 
 exchanges = {
-    'Coinbase': coinbase, 
-    'Coinbase Pro': coinbasepro, 
     'Binance US': binanceus, 
+    'Coinbase': coinbase, 
+    'Coinbase Pro': coinbasepro,
     'KuCoin': kucoin
 }
 

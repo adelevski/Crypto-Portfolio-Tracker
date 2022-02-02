@@ -19,7 +19,7 @@ def dsum(dicts):
     return dict(ret)
 
 
-# Get total balance 
+# Get total balance and balance per exchange
 def get_total():
     all_holdings = {}
     for name, exchange in exchanges.items():
@@ -40,8 +40,8 @@ def string_maker(balance):
     return symbol_string[:-1]
 
 
-def get_prices(total_balance):
-    symbol_string = string_maker(total_balance)
+def get_prices(balance):
+    symbol_string = string_maker(balance)
     data = cmc.cryptocurrency_quotes_latest(symbol=symbol_string)
     prices = {}
     for key in data.data:
@@ -49,6 +49,8 @@ def get_prices(total_balance):
     return prices
 
 def df_work(balance, prices):
+    if 'LYXE' in balance.keys():
+        balance['LYXe'] = balance.pop('LYXE')
     df = pd.DataFrame.from_dict(balance, columns=['amount'], orient='index')
     df['price'] = df.index.map(prices)
     df.fillna(1.0, inplace=True)
