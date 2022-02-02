@@ -23,10 +23,9 @@ def dsum(dicts):
 def get_total():
     all_holdings = {}
     for name, exchange in exchanges.items():
-        print(name)
         all_holdings[name] = parse(exchange.fetch_balance())
-    all_holdings['voyager'] = alts.voyager_balance
-    all_holdings['metamask'] = alts.metamask_balance
+    all_holdings['Voyager'] = alts.voyager_balance
+    all_holdings['MetaMask'] = alts.metamask_balance
     total_balance = dsum(list(all_holdings.values()))
     total_balance['LYXe'] = total_balance.pop('LYXE')
     return dict(sorted(total_balance.items())), all_holdings
@@ -62,4 +61,4 @@ def df_work(balance, prices):
     df['value'] = df['value'].map('${:,.2f}'.format)
     df['weight'] = df['weight'].map('{:,.2f}%'.format)
     print(df)
-    print(f"Total value: ${total_value:.2f}")
+    print(f"Total value: ${total_value:.2f}\n")
