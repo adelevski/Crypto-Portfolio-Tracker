@@ -50,8 +50,8 @@ def get_prices(balance):
     return prices
 
 
-# Formatting data in to dataframes, cleaning it, and displaying it
-def df_work(balance, prices):
+# Formatting data in to dataframes, formatting (if form = True) and returning it along with total value
+def get_df(balance, prices, form=False):
     if 'LYXE' in balance.keys():
         balance['LYXe'] = balance.pop('LYXE')
     df = pd.DataFrame.from_dict(balance, columns=['amount'], orient='index')
@@ -60,10 +60,9 @@ def df_work(balance, prices):
     df['value'] = df['price'] * df['amount']
     total_value = df['value'].sum()
     df['weight'] = (df['value'] / total_value) * 100
-    # dataframe formatting for presentation
-    df['amount'] = df['amount'].map('{:,.4f}'.format)
-    df['price'] = df['price'].map('${:,.2f}'.format)
-    df['value'] = df['value'].map('${:,.2f}'.format)
-    df['weight'] = df['weight'].map('{:,.2f}%'.format)
-    print(df)
-    print(f"Total value: ${total_value:.2f}\n")
+    if form:
+        df['amount'] = df['amount'].map('{:,.4f}'.format)
+        df['price'] = df['price'].map('${:,.2f}'.format)
+        df['value'] = df['value'].map('${:,.2f}'.format)
+        df['weight'] = df['weight'].map('{:,.2f}%'.format)
+    return df, total_value

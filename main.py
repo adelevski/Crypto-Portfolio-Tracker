@@ -1,4 +1,4 @@
-from funcs import get_total, get_prices, df_work
+from funcs import get_total, get_prices, get_df
 
 
 
@@ -10,11 +10,15 @@ if __name__ == "__main__":
 
     # Totals:
     print("Totals:")
-    df_work(total_balance, prices)
+    df, total_value = get_df(total_balance, prices, form=True)
+    print(df)
+    print(f"Total value: ${total_value:.2f}\n")
 
     # Per Exchange:
     for exchange, totals in all_holdings.items():
         print(f"Exchange: {exchange}")
-        df_work(totals, prices)
+        df, total_value = get_df(totals, prices, form=True)
+        print(df)
+        print(f"Total value: ${total_value:.2f}\n")
 
 
