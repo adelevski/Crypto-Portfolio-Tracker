@@ -1,109 +1,129 @@
 import sys
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
-from models import DataFrameModel
 from funcs import get_total, get_prices, get_df
-
 
 
 class MyWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
-        super(MyWindow, self).__init__()
-        self.setGeometry(600, 300, 300, 400)
+        super().__init__()
+        self.setGeometry(600, 300, 300, 300)
         self.setWindowTitle("Crypto-GUI")
-        self.totals = {
-            'Binance US': None, 
-            'Coinbase': None, 
-            'Coinbase Pro': None,
-            'KuCoin': None,
-            'Voyager': None,
-            'MetaMask': None
-        }
-        self.current_amount = 0
         self.initUI()
-        self.refresh()
         
-
 
     def initUI(self):
         self.label_CryptoGUI = QtWidgets.QLabel(self)
         self.label_CryptoGUI.setGeometry(30, 10, 160, 40)
         self.label_CryptoGUI.setText("Crypto-GUI")
 
-        self.button_Refresh = QtWidgets.QPushButton(self)
-        self.button_Refresh.setGeometry(30, 60, 150, 50)
-        self.button_Refresh.setText("Refresh")
-        self.button_Refresh.clicked.connect(self.refresh)
+        self.time_left_int = None
+        self.label_timer = QtWidgets.QLabel(self)
+        self.label_timer.setGeometry(180, 10, 100, 40)
 
-        self.checkBox_Binance = QtWidgets.QCheckBox(self)
-        self.checkBox_Binance.setGeometry(30, 130, 90, 20)
-        self.checkBox_Binance.setText("Binance US")
-        self.checkBox_Binance.clicked.connect(lambda: self.update_amount(self.checkBox_Binance))
+        self.checkbox_freeze = QtWidgets.QCheckBox(self)
+        self.checkbox_freeze.setGeometry(180, 30, 100, 40)
+        self.checkbox_freeze.setText("Freeze")
+        self.checkbox_freeze.clicked.connect(self.freeze)
 
-        self.checkBox_Coinbase = QtWidgets.QCheckBox(self)
-        self.checkBox_Coinbase.setGeometry(30, 160, 80, 20)
-        self.checkBox_Coinbase.setText("Coinbase")
-        self.checkBox_Coinbase.clicked.connect(lambda: self.update_amount(self.checkBox_Coinbase))
+        self.binance = QtWidgets.QLabel(self)
+        self.binance.setGeometry(30, 70, 150, 20)
+        self.binance.setObjectName("Binance US")
 
-        self.checkBox_CoinbasePro = QtWidgets.QCheckBox(self)
-        self.checkBox_CoinbasePro.setGeometry(30, 190, 110, 20)
-        self.checkBox_CoinbasePro.setText("Coinbase Pro")
-        self.checkBox_CoinbasePro.clicked.connect(lambda: self.update_amount(self.checkBox_CoinbasePro))
+        self.coinbase = QtWidgets.QLabel(self)
+        self.coinbase.setGeometry(30, 100, 150, 20)
+        self.coinbase.setObjectName("Coinbase")
 
-        self.checkBox_KuCoin = QtWidgets.QCheckBox(self)
-        self.checkBox_KuCoin.setGeometry(30, 220, 80, 20)
-        self.checkBox_KuCoin.setText("KuCoin")
-        self.checkBox_KuCoin.clicked.connect(lambda: self.update_amount(self.checkBox_KuCoin))
+        self.coinbasepro = QtWidgets.QLabel(self)
+        self.coinbasepro.setGeometry(30, 130, 150, 20)
+        self.coinbasepro.setObjectName("Coinbase Pro")
 
-        self.checkBox_Voyager = QtWidgets.QCheckBox(self)
-        self.checkBox_Voyager.setGeometry(30, 250, 80, 20)
-        self.checkBox_Voyager.setText("Voyager")
-        self.checkBox_Voyager.clicked.connect(lambda: self.update_amount(self.checkBox_Voyager))
+        self.kucoin = QtWidgets.QLabel(self)
+        self.kucoin.setGeometry(30, 160, 150, 20)
+        self.kucoin.setObjectName("KuCoin")
 
-        self.checkBox_MetaMask = QtWidgets.QCheckBox(self)
-        self.checkBox_MetaMask.setGeometry(30, 280, 80, 20)
-        self.checkBox_MetaMask.setText("MetaMask")
-        self.checkBox_MetaMask.clicked.connect(lambda: self.update_amount(self.checkBox_MetaMask))
+        self.voyager = QtWidgets.QLabel(self)
+        self.voyager.setGeometry(30, 190, 150, 20)
+        self.voyager.setObjectName("Voyager")
 
-        self.checkboxes = [
-            self.checkBox_Binance,
-            self.checkBox_Coinbase,
-            self.checkBox_CoinbasePro,
-            self.checkBox_KuCoin,
-            self.checkBox_Voyager,
-            self.checkBox_MetaMask
+        self.metamask = QtWidgets.QLabel(self)
+        self.metamask.setGeometry(30, 220, 150, 20)
+        self.metamask.setObjectName("MetaMask")
+
+        self.label_total = QtWidgets.QLabel(self)
+        self.label_total.setGeometry(30, 250, 200, 50)
+
+        self.labels = [
+            self.binance,
+            self.coinbase,
+            self.coinbasepro,
+            self.kucoin,
+            self.voyager,
+            self.metamask
         ]
 
-        self.label_Amount = QtWidgets.QLabel(self)
-        self.label_Amount.setGeometry(10, 330, 200, 50)
+        self.totals = {
+            'Binance US': 0, 
+            'Coinbase': 0, 
+            'Coinbase Pro': 0,
+            'KuCoin': 0,
+            'Voyager': 0,
+            'MetaMask': 0
+        }
+        self.total_balance, self.all_holdings = get_total()
+
+        self.refresh()
+        self.timer_start()
+        self.update_gui()
+
+
+    def timer_start(self):
+        now = QtCore.QTime.currentTime()
+        next_minute = now.addSecs(60)
+        self.time_left_int = now.secsTo(QtCore.QTime(next_minute.hour(), next_minute.minute(), 14))
+        self.my_qtimer = QtCore.QTimer(self)
+        self.my_qtimer.timeout.connect(self.timer_timeout)
+        self.my_qtimer.start(1000)
+        self.update_gui()
+
+
+    def timer_timeout(self):
+        self.time_left_int -= 1
+        if self.time_left_int == -1:
+            self.time_left_int = 60
+            self.refresh()
+        self.update_gui()
+
+
+    def update_gui(self):
+        self.label_timer.setText("Next Update: " + str(self.time_left_int))
+
 
     def refresh(self):
-        total_balance, all_holdings = get_total()
-        prices = get_prices(total_balance)
-        for exchange, totals in all_holdings.items():
+        prices = get_prices(self.total_balance)
+        for exchange, totals in self.all_holdings.items():
             df, total_value = get_df(totals, prices, form=False)
             self.totals[exchange] = total_value
-        for checkbox in self.checkboxes:
-            self.update_amount(checkbox)
-        
-    def update_amount(self, checkbox):
-        if checkbox.isChecked():
-            self.current_amount = sum(self.totals.values()) - self.totals[checkbox.text()]
-            self.update_label()
+        if not self.checkbox_freeze.isChecked():
+            self.update_labels()
+            
+
+    def update_labels(self):
+        for label in self.labels:
+            label.setText(f"{label.objectName()} - ${round(self.totals[label.objectName()], 2)}")
+            label.adjustSize()
+        self.label_total.setText(f"Total: ${round(sum(self.totals.values()), 2)}")
+        self.label_total.adjustSize()
+
+    
+    def freeze(self):
+        if self.checkbox_freeze.isChecked():
+            pass
         else:
-            self.current_amount -= self.totals[checkbox.text()]
-            if self.current_amount < 0:
-                self.current_amount = 0
-            self.update_label()
+            self.update_labels()
 
-    def update_label(self):
-        self.label_Amount.setText(f"Value: ${round(self.current_amount, 2)}")
-        self.label_Amount.adjustSize()
-        
 
-def window():
+def main():
     app = QtWidgets.QApplication(sys.argv)
     win = MyWindow()
     win.show()
@@ -111,4 +131,4 @@ def window():
 
 
 if __name__ == "__main__":
-    window()
+    main()
