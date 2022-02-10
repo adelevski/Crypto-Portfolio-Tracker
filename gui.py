@@ -8,6 +8,7 @@ class MyWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setGeometry(600, 300, 300, 300)
+        self.setWindowIcon(QtGui.QIcon('icon.jpg'))
         self.setWindowTitle("Crypto-GUI")
         self.initUI()
         
@@ -17,12 +18,12 @@ class MyWindow(QtWidgets.QMainWindow):
         self.label_CryptoGUI.setGeometry(30, 10, 160, 40)
         self.label_CryptoGUI.setText("Crypto-GUI")
 
-        self.time_left_int = None
         self.label_timer = QtWidgets.QLabel(self)
         self.label_timer.setGeometry(180, 10, 100, 40)
 
         self.checkbox_freeze = QtWidgets.QCheckBox(self)
         self.checkbox_freeze.setGeometry(180, 30, 100, 40)
+        self.checkbox_freeze.setText("Freeze")
         self.checkbox_freeze.clicked.connect(self.freeze)
 
         self.binance = QtWidgets.QLabel(self)
@@ -58,17 +59,16 @@ class MyWindow(QtWidgets.QMainWindow):
 
         self.refresh()
         self.timer_start()
-        self.update_gui()
 
 
     def timer_start(self):
         now = QtCore.QTime.currentTime()
-        next_minute = now.addSecs(60)
-        self.time_left_int = now.secsTo(QtCore.QTime(next_minute.hour(), next_minute.minute(), 14))
+        next_update = QtCore.QTime(now.hour(), now.minute(), 14).addSecs(60)
+        self.time_left_int = now.secsTo(next_update)
         self.my_qtimer = QtCore.QTimer(self)
         self.my_qtimer.timeout.connect(self.timer_timeout)
         self.my_qtimer.start(1000)
-        self.update_gui()
+        # self.update_timer()
 
 
     def timer_timeout(self):
@@ -76,10 +76,10 @@ class MyWindow(QtWidgets.QMainWindow):
         if self.time_left_int == -1:
             self.time_left_int = 60
             self.refresh()
-        self.update_gui()
+        self.update_timer()
 
 
-    def update_gui(self):
+    def update_timer(self):
         self.label_timer.setText("Next Update: " + str(self.time_left_int))
 
 
@@ -101,10 +101,8 @@ class MyWindow(QtWidgets.QMainWindow):
 
     
     def freeze(self):
-        if self.checkbox_freeze.isChecked():
-            pass
-        else:
-            self.update_labels()
+        if self.checkbox_freeze.isChecked(): pass
+        else: self.update_labels()
 
 
 def main():
